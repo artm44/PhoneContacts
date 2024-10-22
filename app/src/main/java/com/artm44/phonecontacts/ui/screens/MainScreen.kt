@@ -12,7 +12,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.core.content.ContextCompat
 import com.artm44.phonecontacts.model.Contact
-import com.artm44.phonecontacts.utils.fetchAllContacts
+import com.artm44.phonecontacts.utils.addContacts
 
 @Composable
 fun MainScreen(context: Context) {
@@ -22,11 +22,7 @@ fun MainScreen(context: Context) {
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         if (isGranted) {
-            val fetchedContacts = context.fetchAllContacts().sortedBy { it.name }
-            contacts.addAll(fetchedContacts)
-            val count = contacts.size
-            val suffix = if (count == 1) "" else "ов"
-            Toast.makeText(context, "Найдено $count контакт$suffix", Toast.LENGTH_SHORT).show()
+            addContacts(context, contacts)
         } else {
             Toast.makeText(context, "Разрешение не получено\n ", Toast.LENGTH_SHORT).show()
         }
@@ -36,18 +32,11 @@ fun MainScreen(context: Context) {
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS) ==
             PackageManager.PERMISSION_GRANTED
         ) {
-            val fetchedContacts = context.fetchAllContacts().sortedBy { it.name }
-            contacts.addAll(fetchedContacts)
-            val count = contacts.size
-            val suffix = if (count == 1) "" else "ов"
-            Toast.makeText(context, "Найдено $count контакт$suffix", Toast.LENGTH_SHORT).show()
+            addContacts(context, contacts)
         } else {
             permissionLauncher.launch(Manifest.permission.READ_CONTACTS)
         }
     }
-
-    if (contacts.isNotEmpty()) {
-        ContactsScreen(context, contacts)
-    }
+    ContactsScreen(context, contacts)
 }
 

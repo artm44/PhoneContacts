@@ -17,7 +17,6 @@ fun normalizePhoneNumber(phoneNumber: String): String {
 }
 
 
-
 fun Context.fetchAllContacts(): List<Contact> {
     return try {
         contentResolver.query(
@@ -50,4 +49,13 @@ fun Context.fetchAllContacts(): List<Contact> {
         Toast.makeText(this, "Ошибка при доступе к контактам", Toast.LENGTH_SHORT).show()
         emptyList()
     }
+}
+
+
+fun addContacts(context: Context, contacts: MutableList<Contact>) {
+    val fetchedContacts = context.fetchAllContacts().sortedBy { it.name }
+    contacts.addAll(fetchedContacts)
+    val count = contacts.size
+    val suffix = if (count == 1) "" else "ов"
+    Toast.makeText(context, "Найдено $count контакт$suffix", Toast.LENGTH_SHORT).show()
 }
